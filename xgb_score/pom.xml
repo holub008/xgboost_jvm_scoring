@@ -101,6 +101,7 @@
                                 <argument>../features.fmap</argument>
                                 <argument>../results.csv</argument>
                                 <argument>20</argument>
+                                <argument>false</argument>
                             </arguments>
                         </configuration>
                     </execution>

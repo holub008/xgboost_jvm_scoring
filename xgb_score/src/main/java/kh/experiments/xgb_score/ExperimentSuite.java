@@ -20,11 +20,31 @@ import java.util.stream.Collectors;
  */
 public class ExperimentSuite
 {
-    private final Map<String, ExperimentRunner> m_experimentsToRun;
+    private interface Logger
+    {
+        void log(String message);
+    }
 
-    public ExperimentSuite(Map<String, ExperimentRunner> experimentsToRun)
+    private static class NoOpLogger implements Logger
+    {
+        public void log(String message){}
+    }
+
+    private static class ConsoleLogger implements Logger
+    {
+        public void log(String message)
+        {
+            System.out.println(message);
+        }
+    }
+
+    private final Map<String, ExperimentRunner> m_experimentsToRun;
+    private final Logger m_logger;
+
+    public ExperimentSuite(Map<String, ExperimentRunner> experimentsToRun, Logger logger)
     {
         m_experimentsToRun = experimentsToRun;
+        m_logger = logger;
     }
 
     public Map<String, List<Long>> run(int replicatesPerExperiment)
@@ -33,6 +53,7 @@ public class ExperimentSuite
         for (Map.Entry<String, ExperimentRunner> experimentEntry : m_experimentsToRun.entrySet())
         {
             String experimentName = experimentEntry.getKey();
+            m_logger.log("Running experiment: " + experimentName);
             ExperimentRunner experiment = experimentEntry.getValue();
 
             results.put(experimentName, experiment.run(replicatesPerExperiment));
@@ -49,6 +70,8 @@ public class ExperimentSuite
         String featureMapPath = args[3];
         Path resultsDestination = Paths.get(args[4]);
         int replicates = Integer.parseInt(args[5]);
+        boolean verbose = args.length > 6 ? Boolean.parseBoolean(args[6]) : true;
+        Logger logger = verbose ? new ConsoleLogger() : new NoOpLogger();
 
         Map<String, ExperimentRunner> experiments = new HashMap<>();
 
@@ -92,7 +115,7 @@ public class ExperimentSuite
             }
         }
 
-        ExperimentSuite suite = new ExperimentSuite(experiments);
+        ExperimentSuite suite = new ExperimentSuite(experiments, logger);
 
         suite.run(replicates);
 
@@ -102,7 +125,6 @@ public class ExperimentSuite
                 .map(entry -> entry.getKey() + "," + entry.getValue().stream().map(Object::toString).collect(Collectors.joining(",")))
                 .collect(Collectors.joining("\n"));
 
-        System.out.println(csvResults);
         Files.write(resultsDestination, csvResults.getBytes());
     }
 }
