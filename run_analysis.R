@@ -41,6 +41,8 @@ for (plot_tree_depth in unique(parsed_results$depth)) {
       geom_line() +
       geom_point() +
       geom_errorbar(aes(ymin=bound_025, ymax=bound_975)) +
-      ggtitle(paste0('For depth ', plot_tree_depth))
+      ggtitle(paste0('For max tree depth ', plot_tree_depth)) +
+      xlab("Number of trees in ensemble") +
+      ylab("Observations per millisecond")
   ggsave(paste0('plots/depth', as.character(plot_tree_depth), '.png'), p)
 }
