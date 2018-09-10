@@ -10,18 +10,18 @@ colnames(censusIncome) <- c('age', 'workclass', 'fnlwgt', 'education', 'educatio
                             'hours_per_week', 'native_country', 'above_50k')
 censusIncome <- censusIncome %>%
   mutate(
-    above_50k = above_50k == '>50K'
+    above_50k = above_50k == ' >50K'
   )
 
-censusIncomeMat <- model.matrix( ~ . - above_50k,
+censusIncomeMat <- model.matrix( ~ . - above_50k - 1,
                              censusIncome)
 colnames(censusIncomeMat) <- sapply(colnames(censusIncomeMat), function(col) {
                                 gsub(" ", "", col, fixed = TRUE)}) %>% 
                              unname()
 
 setups <- expand.grid(
-  n_trees = c(1),
-  tree_depth = c(2,3,5)
+  n_trees = c(1, 5, 20, 50, 200, 500)
+  tree_depth = c(2, 3, 5)
 )
 
 batch_sizes <- c(5, 10, 20, 50, 100, 1e3, 1e4, nrow(censusIncomeMat))
@@ -40,7 +40,8 @@ writeFMap(fmap, 'features.fmap')
 for (setup_ix in 1:nrow(setups)) {
   setup <- setups[setup_ix,]
   setup_name <- paste0(setup$n_trees, '_', setup$tree_depth)
-  m_xgb <- xgboost(data = sp.dmatrix, nrounds = setup$n_trees, max_depth = setup$tree_depth, objective = "binary:logistic")
+  m_xgb <- xgboost(data = dmatrix, nrounds = setup$n_trees, 
+                   max_depth = setup$tree_depth, objective = "binary:logistic")
   
   xgb.save(m_xgb, paste0('xgboost_raw_models/', setup_name, '.model'))
   r2pmml(m_xgb, paste0('pmml_models/', setup_name, '.model'), fmap = fmap, response_name = "above_50k") 
