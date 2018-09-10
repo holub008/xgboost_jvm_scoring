@@ -20,7 +20,7 @@ colnames(censusIncomeMat) <- sapply(colnames(censusIncomeMat), function(col) {
                              unname()
 
 setups <- expand.grid(
-  n_trees = c(1, 5, 20, 50, 200, 500)
+  n_trees = c(1, 5, 20, 50, 200, 500),
   tree_depth = c(2, 3, 5)
 )
 
