@@ -9,20 +9,20 @@ mvn clean install
 
 ### xgboost-predictor-java
 ```bash
-mvn exec:java@XGB_jvm"
+mvn exec:java@XGB_jvm
 ```
 
 ### xgboost4j
 ```bash
-mvn exec:java@XGB_native"
+mvn exec:java@XGB_native
 ```
 
 ### jpmml
 ```bash
-mvn exec:java@pmml"
+mvn exec:java@pmml
 ```
 
 ### full suite
 ```bash
-mvn exec:java@suite"
+mvn exec:java@suite
 ```
