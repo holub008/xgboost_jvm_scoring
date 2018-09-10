@@ -1,8 +1,13 @@
 # xgboost_jvm_scoring
 Comparing runtime for JVM based libraries for XGBoost model scoring. This type of analysis may inform library selection for time sensitive applications, such as a web requests or a credit card transactions.
 
+## Running
+```bash
+bash run_suite.bash
+```
+
 ## XGBoost
-XGBoost is a popular library for fitting gradient boosted tree ensembles. For an explanation of general tree boosting algorithms, see [here](https://github.com/holub008/snippets/blob/master/tree_learning/tree_learning_overview.pdf).
+[XGBoost](https://xgboost.readthedocs.io/en/latest/#) is a popular library for fitting gradient boosted tree ensembles. For an explanation of general tree boosting algorithms, see [here](https://github.com/holub008/snippets/blob/master/tree_learning/tree_learning_overview.pdf).
 
 ## Example for OSX (10.12.6)
 Ran 20 replicates (serial execution) for each experimental setup in the cartesian product of the following:
