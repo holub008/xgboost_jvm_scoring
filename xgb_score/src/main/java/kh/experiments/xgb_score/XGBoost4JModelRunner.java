@@ -95,7 +95,7 @@ class XGBoost4JModelRunner implements ExperimentRunner
         return runtimes;
     }
 
-    static void main(String[] args) throws XGBoostError
+    public static void main(String[] args) throws XGBoostError
     {
         if (args.length < 2)
         {

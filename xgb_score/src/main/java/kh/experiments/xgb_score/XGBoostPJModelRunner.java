@@ -68,7 +68,8 @@ class XGBoostPJModelRunner implements ExperimentRunner
             m_timer.start();
             for (int observationIx = 0; observationIx < m_predictionData.length; observationIx++)
             {
-                m_model.predict(m_predictionData[observationIx]);
+                double[] predictions = m_model.predict(m_predictionData[observationIx]);
+                System.out.println(predictions[0]);
             }
             m_timer.stop();
             runtimes.add(replicateIx, m_timer.getTime(TimeUnit.MICROSECONDS));
@@ -83,7 +84,7 @@ class XGBoostPJModelRunner implements ExperimentRunner
         return m_predictionData.length;
     }
 
-    static void main(String[] args) throws IOException
+    public static void main(String[] args) throws IOException
     {
         if (args.length < 2)
         {

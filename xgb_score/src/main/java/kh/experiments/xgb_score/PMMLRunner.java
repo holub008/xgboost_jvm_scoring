@@ -40,11 +40,23 @@ class PMMLRunner implements ExperimentRunner
     {
         try
         {
-            Map<FieldName, FieldValue>[] data = DataReaderUtils.hackReadLibSVMToPMML(dataPath, featureMapPath);
+            PMML pmml;
 
-            return create(modelPath, data);
+            try (InputStream resource = new FileInputStream(modelPath))
+            {
+                pmml = org.jpmml.model.PMMLUtil.unmarshal(resource);
+            }
+
+            ModelEvaluatorFactory modelEvaluatorFactory = ModelEvaluatorFactory.newInstance();
+            ModelEvaluator evaluator = modelEvaluatorFactory.newModelEvaluator(pmml);
+
+            Map<FieldName, FieldValue>[] data = dataPath.endsWith(".svm") ?
+                    DataReaderUtils.hackReadLibSVMToPMML(dataPath, featureMapPath) :
+                    DataReaderUtils.readJSONFeatures(dataPath, evaluator);
+
+            return new PMMLRunner(evaluator, data);
         }
-        catch (IOException ex)
+        catch (IOException | JAXBException | SAXException ex)
         {
             throw new RuntimeException("Failed to load data", ex);
         }
@@ -52,6 +64,7 @@ class PMMLRunner implements ExperimentRunner
 
     /**
      * use this creation point to avoid reloading data for different models
+     * note that this depends on the predictionData & the model preprocessing to be independent (or consistent across different client models)
      */
     static PMMLRunner create(String modelPath, Map<FieldName, FieldValue>[] predictionData)
     {
@@ -74,7 +87,6 @@ class PMMLRunner implements ExperimentRunner
             throw new RuntimeException("Failed to load model", ex);
         }
     }
-
 
     long getDataSize()
     {
@@ -104,11 +116,11 @@ class PMMLRunner implements ExperimentRunner
         return runtimes;
     }
 
-    static void main(String[] args)
+    public static void main(String[] args)
     {
         if (args.length < 3)
         {
-            throw new RuntimeException("Need to specify 1. a serialized pmml model 2. a data location (libsvm format) 3. a feature map");
+            throw new RuntimeException("Need to specify 1. a serialized pmml model 2. a data location (libsvm format) 3. a feature map (optional for json featureset)");
         }
 
         // replicates are the number of times we repeat the input data
