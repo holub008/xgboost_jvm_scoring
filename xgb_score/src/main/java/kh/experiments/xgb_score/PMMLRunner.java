@@ -33,7 +33,7 @@ class PMMLRunner implements ExperimentRunner
         m_predictionData = predictionData;
 
         // docs claim that first evaluation loads/caches a bunch of model stuff, so we do that outside of timing
-        m_model.evaluate(m_predictionData[1]);
+        m_model.evaluate(m_predictionData[0]);
     }
 
     static PMMLRunner create(String modelPath, String dataPath, String featureMapPath)

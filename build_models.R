@@ -28,8 +28,9 @@ batch_sizes <- c(5, 10, 20, 50, 100, 1e3, 1e4, nrow(censusIncomeMat))
 
 ## note that we re-wrap the matrix as a data.frame to capture the design matrix (one-hot encoded), not the raw features
 for (batch_size in batch_sizes) {
-  dmatrix <- genDMatrix(as.integer(censusIncome$above_50k), 
-                        as.data.frame(censusIncomeMat[sample(nrow(censusIncomeMat), batch_size), ]), 
+  sample_ix <- sample(nrow(censusIncomeMat), batch_size)
+  dmatrix <- genDMatrix(as.integer(censusIncome$above_50k[sample_ix]), 
+                        as.data.frame(censusIncomeMat[sample_ix, ]), 
                         paste0('experiment_data/', as.character(batch_size), '.svm'))
 }
 
