@@ -69,7 +69,6 @@ class XGBoostPJModelRunner implements ExperimentRunner
             for (int observationIx = 0; observationIx < m_predictionData.length; observationIx++)
             {
                 double[] predictions = m_model.predict(m_predictionData[observationIx]);
-                System.out.println(predictions[0]);
             }
             m_timer.stop();
             runtimes.add(replicateIx, m_timer.getTime(TimeUnit.MICROSECONDS));
