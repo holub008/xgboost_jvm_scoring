@@ -1,4 +1,4 @@
-library(r2pmml) # installable via devtools::install_git("git://github.com/jpmml/r2pmml.git")
+library(r2pmml) # installable via devtools::install_github("jpmml/r2pmml")
 library(xgboost)
 library(dplyr)
 library(RCurl)
@@ -47,7 +47,3 @@ for (setup_ix in 1:nrow(setups)) {
   xgb.save(m_xgb, paste0('xgboost_raw_models/', setup_name, '.model'))
   r2pmml(m_xgb, paste0('pmml_models/', setup_name, '.model'), fmap = fmap, response_name = "above_50k") 
 }
-
-
-
-
